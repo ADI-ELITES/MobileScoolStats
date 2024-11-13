@@ -1,9 +1,118 @@
 import 'dart:convert';
+import 'package:mobile_school_state/models/classe.dart';
+import 'package:mobile_school_state/models/matiere.dart';
+
 import '../models/eleve.dart';
 import '../constant.dart';
 import 'package:http/http.dart' as http;
 import '../models/api_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Récupération des matières d'une classe donnée
+Future<ApiResponse> getMatieresFromClasse(ClasseModel classe) async {
+  ApiResponse apiResponse = ApiResponse();
+
+  try {
+    // Récupérer le token stocké
+    String? token = await getToken();
+    if (token == null) {
+      apiResponse.error = unauthorized;
+      return apiResponse;
+    }
+
+    // Envoyer une requête POST avec la classe
+    final response = await http.get(
+      Uri.parse(matieresURL),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      /*body: jsonEncode({
+        'classe': {
+          'niveau': classe.niveau,
+          'serie': classe.serie,
+          'codeclas': classe.codeclas,
+          //'proftitul': classe.proftitul,
+        },
+      }),*/ // JSON encodé sous forme de chaîne
+    );
+    //print("réponse tostring: ${classe.toJson()}");
+    //print("réponse : ${response}");
+
+    switch (response.statusCode) {
+      // Décodez la réponse JSON
+      case 200:
+        print("réponse body: ${response.body}");
+        //Map<String, dynamic> jsonData = jsonDecode(response.body);
+        List<dynamic> matieresJson = jsonDecode(response.body);
+
+        // Convertissez la liste en objets MatiereModel
+        apiResponse.data = matieresJson
+            .map((matiere) => MatiereModel.fromJson(matiere))
+            .toList();
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    print(e);
+    apiResponse.error = "$serverError : lors de la récupération des matières";
+  }
+  return apiResponse;
+}
+
+//  Récupération des classes après authentification
+Future<ApiResponse> getClasses() async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    // Récupérer le token stocké
+    String? token = await getToken();
+    if (token == null) {
+      apiResponse.error = unauthorized;
+      return apiResponse;
+    }
+
+    final response = await http.get(
+      Uri.parse(classeURL),
+      headers: {
+        "Accept": "application/json",
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    switch (response.statusCode) {
+      // Décodez la réponse JSON
+      case 200:
+        //Map<String, dynamic> jsonData = jsonDecode(response.body);
+        List<dynamic> classeJson = jsonDecode(response.body);
+
+        // Convertissez la liste en objets EleveModel
+        apiResponse.data =
+            classeJson.map((classe) => ClasseModel.fromJson(classe)).toList();
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    print(e);
+    apiResponse.error = "$serverError : lors de la récupération des classes";
+  }
+  return apiResponse;
+}
 
 //  Récupération des élèves après authentification
 Future<ApiResponse> getEleves() async {

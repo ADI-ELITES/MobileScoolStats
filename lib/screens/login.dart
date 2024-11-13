@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_school_state/screens/classes_screen.dart';
 import 'package:mobile_school_state/screens/dashboard.dart';
 import '../services/api_service.dart'; // La fonction login() que nous avons créée
 import '../models/api_response.dart';
@@ -47,11 +48,16 @@ class _Logo extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        FlutterLogo(size: isSmallScreen ? 100 : 200),
+        //FlutterLogo(size: isSmallScreen ? 100 : 200),
+        Image.asset(
+          'assets/LOGO-SCOLARIS.png',
+          width: isSmallScreen ? 100 : 200,
+          height: isSmallScreen ? 100 : 200,
+        ),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            "Welcome to Flutter!",
+            "Bienvenue à SCOLARIS.1!",
             textAlign: TextAlign.center,
             style: isSmallScreen
                 ? Theme.of(context).textTheme.headlineSmall
@@ -65,7 +71,6 @@ class _Logo extends StatelessWidget {
     );
   }
 }
-
 
 class _FormContent extends StatefulWidget {
   const _FormContent();
@@ -188,7 +193,9 @@ class __FormContentState extends State<_FormContent> {
                     // Gérer la réponse
                     if (response.error == null) {
                       // Redirection vers le dashboard
-                      Navigator.pushNamed(context, Dashboard.routeName);
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const ClasseScreen(),
+                      ));
                     } else {
                       // Afficher un message d'erreur
                       ScaffoldMessenger.of(context).showSnackBar(

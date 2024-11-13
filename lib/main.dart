@@ -17,11 +17,15 @@ class MainApp extends StatelessWidget {
       title: 'SchoolState',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.brown,
+        colorScheme:
+            ColorScheme.fromSwatch(primarySwatch: Colors.green).copyWith(
+          primary: Colors.green.shade900,
+          secondary: Colors.greenAccent,
+        ),
         useMaterial3: true,
         brightness: isDark ? Brightness.dark : Brightness.light,
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
       /*routes: routes,
       initialRoute: '/',*/
     );

@@ -6,13 +6,11 @@ import '../constant.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'dart:io';
 
 class Dashboard extends StatefulWidget {
-  //final bool isDark; // Accepte isDark en tant que paramètre
   const Dashboard({
     super.key,
-    /*required this.isDark*/
   }); // Modifie le constructeur
 
   static String routeName = "/dashboard";
@@ -69,8 +67,10 @@ class _DashboardState extends State<Dashboard> {
             ),
           )
         : eleves.isEmpty
-            ? const Center(
-                child: Text('Aucun élève trouvé'),
+            ? const Scaffold(
+                body: Center(
+                  child: Text('Aucun élève trouvé'),
+                ),
               )
             : Scaffold(
                 appBar: AppBar(
@@ -107,22 +107,29 @@ class _DashboardState extends State<Dashboard> {
   }
 }
 
-
 Future<void> _downloadAndSharePdf(String url, String nomEleve) async {
-    try {
-      // Utiliser Dio pour télécharger le PDF
-      var dio = Dio();
+  try {
+    var dio = Dio();
 
-      // Obtenez le chemin du répertoire temporaire
-      var dir = await getTemporaryDirectory();
-      String filePath = '${dir.path}/$nomEleve.pdf';
+    // Obtenez le chemin du répertoire temporaire
+    var dir = await getTemporaryDirectory();
+    String filePath = '${dir.path}/$nomEleve.pdf';
+    print('ici : $url, $filePath');
+    // Téléchargez le fichier PDF
+    await dio.download(url, filePath);
 
-      // Téléchargez le fichier PDF
-      await dio.download(url, filePath);
+    // Vérifiez si le fichier a bien été téléchargé
+    File pdfFile = File(filePath);
+    if (await pdfFile.exists()) {
+      print('Fichier téléchargé avec succès : $filePath');
 
-      // Partager le fichier PDF
-      await Share.shareXFiles([XFile(filePath)], text: 'Document pour $nomEleve');
-    } catch (e) {
-      print('Erreur lors du téléchargement ou du partage : $e');
+      // Partagez le fichier PDF
+      await Share.shareXFiles([XFile(filePath)],
+          text: 'Document pour $nomEleve');
+    } else {
+      print('Erreur : le fichier n\'existe pas.');
     }
+  } catch (e) {
+    print('Erreur lors du téléchargement ou du partage : $e');
   }
+}

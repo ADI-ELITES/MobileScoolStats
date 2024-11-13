@@ -1,68 +1,78 @@
 class EleveModel {
-  int? id;
+  //int? id;
+  String? niveau;
+  String? serie;
+  String? codeclas;
   String? matric;
   String? nom;
   String? prenom;
   String? sexe;
-  DateTime? datenais;
+  /*DateTime? datenais;
   String? phoneeleve;
   String? nompar;
   String? prenpar;
   String? profespar;
   String? phonepar;
-  String? sexepar;
+  String? sexepar;*/
 
   EleveModel({
-    this.id,
+    //this.id,
+    this.niveau,
+    this.serie,
+    this.codeclas,
     this.matric,
     this.nom,
     this.prenom,
     this.sexe,
-    this.datenais,
+    /*this.datenais,
     this.phoneeleve,
     this.nompar,
     this.prenpar,
     this.profespar,
     this.phonepar,
-    this.sexepar,
+    this.sexepar,*/
   });
 
   factory EleveModel.fromJson(Map<String, dynamic> json) {
     return EleveModel(
-      id: json['id'],
+      niveau: json['niveau'],
+      serie: json['serie'],
+      codeclas: json['codeclas'],
       matric: json['matric'],
       nom: json['nom'],
       prenom: json['prenom'],
       sexe: json['sexe'],
-      datenais: DateTime.parse(json['datenais']),
+      /*datenais: DateTime.parse(json['datenais']),
       phoneeleve: json['phoneeleve'],
       nompar: json['nompar'],
       prenpar: json['prenpar'],
       profespar: json['profespar'],
       phonepar: json['phonepar'],
-      sexepar: json['sexepar'],
+      sexepar: json['sexepar'],*/
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'matric': matric,
+      //'id': id,
+      'niveau': niveau,
+      'serie': serie,
+      'codeclas': codeclas,
       'nom': nom,
       'prenom': prenom,
       'sexe': sexe,
-      'datenais': datenais?.toIso8601String(),
+      /*'datenais': datenais?.toIso8601String(),
       'phoneeleve': phoneeleve,
       'nompar': nompar,
       'prenpar': prenpar,
       'profespar': profespar,
       'phonepar': phonepar,
-      'sexepar': sexepar,
+      'sexepar': sexepar,*/
     };
   }
 
   @override
   String toString() {
-    return 'EleveModel{id: $id, matric: $matric, nom: $nom, prenom: $prenom, sexe: $sexe, datenais: $datenais, phoneeleve: $phoneeleve, nompar: $nompar, prenpar: $prenpar, profespar: $profespar, phonepar: $phonepar, sexepar: $sexepar}';
+    return 'EleveModel{matric: $matric, nom: $nom, prenom: $prenom, sexe: $sexe}';
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_school_state/constant.dart';
+import 'package:mobile_school_state/screens/classes_screen.dart';
 import 'package:mobile_school_state/screens/dashboard.dart';
 import 'package:mobile_school_state/screens/login.dart';
 
@@ -20,18 +21,30 @@ class _SplashScreenState extends State<SplashScreen> {
   // Méthode de vérification du token :
   void _checkToken() async {
     String? token = await getToken();
+    //print("Token actuel : $token");
+
     if (token != null) {
-      // Si le token existe, alors rediriger vers le tableau de bord
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const Dashboard(),
-      ));
+      bool tokenIsValid = await isTokenStillValid();
+
+      if (tokenIsValid) {
+        // Si le token est valide, rediriger vers l'écran des classes
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const ClasseScreen()),
+        );
+      } else {
+        // Si le token n'est plus valide, rediriger vers la page de connexion
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const SignInPage()),
+        );
+      }
     } else {
-      // Sinon, redirigez vers la page de connexion
+      // Si le token n'existe pas, rediriger vers la page de connexion
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const SignInPage()),
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
