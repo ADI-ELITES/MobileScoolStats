@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // ------ STRINGS ------
-const String baseURL = "http://192.168.6.18:8000";
+const String baseURL = "http://192.168.6.31:8000";
 const String elevesURL = '$baseURL/api/eleves/';
 const String loginURL = '$baseURL/api/login';
 const String logoutURL = '$baseURL/api/logout';
