@@ -34,6 +34,8 @@ class _EleveScreenState extends State<EleveScreen> {
                 eleve.serie == widget.matiere.serie &&
                 eleve.codeclas == widget.matiere.codeclas)
             .toList();
+        // Trier les élèves par ordre croissant de la première lettre du nom
+        eleves.sort((a, b) => a.nom!.compareTo(b.nom!));
         isLoading = false; // Stopper l'indicateur de chargement
       });
     } else if (response.error == unauthorized) {

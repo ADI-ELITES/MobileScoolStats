@@ -162,6 +162,68 @@ Future<ApiResponse> getEleves() async {
   return apiResponse;
 }
 
+
+//  Authentification d'un user
+Future<ApiResponse> getNoteFromEleve(EleveModel eleve, MatiereModel matiere) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    // Récupérer le token stocké
+    String? token = await getToken();
+    if (token == null) {
+      apiResponse.error = unauthorized;
+      return apiResponse;
+    }
+
+    // Envoyer une requête POST avec l'email et le mot de passe
+    final response = await http.post(
+      Uri.parse(loginURL),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: {
+        'niveau': eleve.niveau,
+        'serie': eleve.serie,
+        'codeclas': eleve.codeclas,
+        'nom': eleve.nom,
+        'prenom': eleve.prenom,
+        'sexe': eleve.sexe,
+
+        'nomatiere': matiere.nomatiere,
+        'nomprof': matiere.nomprof,
+      },
+    );
+    print(response.statusCode);
+
+    switch (response.statusCode) {
+      case 200:
+        // Si la réponse est 200, on suppose que le token est renvoyé
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        String token = responseData['token'];
+
+        // Stocker le token dans SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+
+        apiResponse.data = token;
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+
 //  Authentification d'un user
 Future<ApiResponse> login(String email, String password) async {
   ApiResponse apiResponse = ApiResponse();

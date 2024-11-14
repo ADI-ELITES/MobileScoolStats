@@ -13,6 +13,7 @@ const String classeURL = '$baseURL/api/classes';
 const String matieresURL = '$baseURL/api/matieres';
 const String matieresClassesURL = '$classeURL/matieres';
 const String notesURL = '$baseURL/api/notes/';
+const String notesEleveURL = '$baseURL/api/notes/eleve/';
 const String enseignantURL = '$baseURL/api/enseignants/';
 const String validateTokenURL = '$baseURL/api/token/validate';
 
