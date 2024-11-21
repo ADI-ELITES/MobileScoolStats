@@ -3,6 +3,7 @@ import 'package:mobile_school_state/constant.dart';
 import 'package:mobile_school_state/models/api_response.dart';
 import 'package:mobile_school_state/models/eleve.dart';
 import 'package:mobile_school_state/models/matiere.dart';
+import 'package:mobile_school_state/screens/eleve_notes_screen.dart';
 import '../services/api_service.dart';
 
 class EleveScreen extends StatefulWidget {
@@ -86,7 +87,8 @@ class _EleveScreenState extends State<EleveScreen> {
                           '${eleves[index].nom!.substring(0, 1).toUpperCase()}'),
                     ),
                     title: Text('${eleves[index].nom!.toUpperCase()}'),
-                    subtitle: Text('${eleves[index].prenom!.toUpperCase()}'),
+                    subtitle: Text(
+                        '${eleves[index].prenom!.toUpperCase()} (${eleves[index].matric})'),
                     trailing: TextButton.icon(
                       style: TextButton.styleFrom(
                         backgroundColor: Theme.of(context)
@@ -95,7 +97,15 @@ class _EleveScreenState extends State<EleveScreen> {
                         foregroundColor:
                             Theme.of(context).colorScheme.onPrimary,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EleveNoteScreen(
+                                eleve: eleves[index], matiere: widget.matiere),
+                          ),
+                        );
+                      },
                       label: const Text('Notes'),
                       icon: const Icon(Icons.app_registration_rounded),
                     ),

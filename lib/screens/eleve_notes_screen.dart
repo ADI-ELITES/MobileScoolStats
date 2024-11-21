@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_school_state/constant.dart';
 import 'package:mobile_school_state/models/api_response.dart';
+import 'package:mobile_school_state/models/classe.dart';
 import 'package:mobile_school_state/models/eleve.dart';
 import 'package:mobile_school_state/models/matiere.dart';
 import 'package:mobile_school_state/models/note.dart';
@@ -17,75 +18,102 @@ class EleveNoteScreen extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _EleveNoteScreenState();
+  State<EleveNoteScreen> createState() => _EleveNoteScreenState();
 }
 
 class _EleveNoteScreenState extends State<EleveNoteScreen> {
-  late NoteModel noteEleve;
+  NoteModel? noteEleve;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fetchNoteEleveWithMatiere();
+    fetchNote();
   }
 
-  Future fetchNoteEleveWithMatiere() async {
-    // Implémentation pour récupérer les notes
-     ApiResponse response = await getNoteFromEleve(widget.eleve, widget.matiere);
-    if (response.error == null) {
+  Future<void> fetchNote() async {
+    try {
+      NoteModel fetchedNote = await getNote();
       setState(() {
-        noteEleve = response.data as NoteModel;
-        isLoading = false; // Stopper l'indicateur de chargement
-      });
-    } else if (response.error == unauthorized) {
-      setState(() {
+        noteEleve = fetchedNote;
         isLoading = false;
       });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text(unauthorized)));
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.error ?? "tout est vide")),
-      );
+    } catch (e) {
+      _showError("Erreur : ${e.toString()}");
     }
+  }
+
+  Future<NoteModel> getNote() async {
+    try {
+      ApiResponse response = await getNotes();
+      //print(response.data);
+      if (response.error == null) {
+        List<NoteModel> notes = (response.data as List<NoteModel>)
+            .where(
+              (note) =>
+                  note.matric == widget.eleve.matric &&
+                  note.serie == widget.eleve.serie &&
+                  note.codeclas == widget.eleve.codeclas,
+            )
+            .toList();
+
+        return notes.isNotEmpty ? notes.first : NoteModel();
+      } else {
+        throw Exception(response.error ?? "Erreur inconnue");
+      }
+    } catch (e) {
+      throw Exception("Erreur getnote : ${e.toString()}");
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notes de ${widget.eleve.nom} (${widget.eleve.matric})"),
+        title: Text("Notes de ${widget.eleve.nom}"),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Center(
-        child: Container(
-          padding: const EdgeInsets.all(32.0),
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Center(
-                  child: _FormContent(note: noteEleve),
+              child: Container(
+                padding: const EdgeInsets.all(32.0),
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: _FormContent(
+                          note: noteEleve ?? NoteModel(),
+                          matiere: widget.matiere,
+                          eleve: widget.eleve,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
 
 class _FormContent extends StatefulWidget {
   final NoteModel note;
+  final MatiereModel matiere;
+  final EleveModel eleve;
 
-  const _FormContent({super.key, required this.note});
+  const _FormContent({
+    super.key,
+    required this.note,
+    required this.matiere,
+    required this.eleve,
+  });
 
   @override
   State<_FormContent> createState() => __FormContentState();
@@ -99,19 +127,90 @@ class __FormContentState extends State<_FormContent> {
   late TextEditingController _troisiemeDevoirController;
   late TextEditingController _composController;
 
+  ClasseModel? classe;
+
   @override
   void initState() {
     super.initState();
+    _initializeControllers();
+    _fetchClasse();
+  }
 
-    // Initialisation des contrôleurs avec les valeurs des notes
-    _premierDevoirController = TextEditingController(
-        text: widget.note.devoir01?.toString() ?? '');
-    _deuxiemeDevoirController = TextEditingController(
-        text: widget.note.devoir02?.toString() ?? '');
-    _troisiemeDevoirController = TextEditingController(
-        text: widget.note.devoir03?.toString() ?? '');
+  void _initializeControllers() {
+    _premierDevoirController =
+        TextEditingController(text: widget.note.devoir01?.toString() ?? '');
+    _deuxiemeDevoirController =
+        TextEditingController(text: widget.note.devoir02?.toString() ?? '');
+    _troisiemeDevoirController =
+        TextEditingController(text: widget.note.devoir03?.toString() ?? '');
     _composController =
         TextEditingController(text: widget.note.compos?.toString() ?? '');
+  }
+
+  Future<void> _fetchClasse() async {
+    try {
+      ClasseModel fetchedClasse = await getEleveClasse(
+        widget.note.niveau ?? widget.matiere.niveau,
+        widget.note.serie ?? widget.matiere.serie,
+        widget.note.codeclas ?? widget.matiere.codeclas,
+      );
+      //print("classe : $fetchedClasse");
+
+      setState(() {
+        classe = fetchedClasse;
+      });
+    } catch (e) {
+      _showError("Erreur : ${e.toString()}");
+    }
+  }
+
+  Future<ClasseModel> getEleveClasse(niveau, serie, codeclas) async {
+    try {
+      ApiResponse response = await getClasses();
+      if (response.error == null) {
+        List<ClasseModel> classes = (response.data as List<ClasseModel>)
+            .where(
+              (classe) =>
+                  classe.niveau == niveau &&
+                  classe.serie == serie &&
+                  classe.codeclas == codeclas,
+            )
+            .toList();
+
+        return classes.isNotEmpty
+            ? classes.first
+            : ClasseModel(
+                niveau: niveau,
+                serie: serie,
+                codeclas: codeclas,
+                periode: "NS");
+      } else {
+        throw Exception(response.error ?? "Erreur inconnue");
+      }
+    } catch (e) {
+      throw Exception("Erreur : ${e.toString()}");
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> storeNoteEleve(NoteModel note) async {
+    ApiResponse response = await saveEleveNote(note);
+    if (response.error == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Note enregistrée avec succès.")),
+      );
+    } else if (response.error == unauthorized) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text(unauthorized)));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response.error ?? "Erreur d'enregistrement.")),
+      );
+    }
   }
 
   @override
@@ -141,58 +240,83 @@ class __FormContentState extends State<_FormContent> {
       child: Form(
         key: _formKey,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextFormField(
-              controller: _premierDevoirController,
-              keyboardType: TextInputType.number,
-              validator: validateNoteInput,
-              decoration: const InputDecoration(
-                labelText: 'Note du premier devoir',
-                hintText: 'Entrer un entier entre 0 et 20',
-                prefixIcon: Icon(Icons.first_page),
-                border: OutlineInputBorder(),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                "Classe de ${classe?.niveau} ${classe?.codeclas}",
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Matière : ${widget.matiere.nomatiere}',
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                "Période : ${classe?.periode}",
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
             ),
             _gap(),
-            TextFormField(
-              controller: _deuxiemeDevoirController,
-              keyboardType: TextInputType.number,
-              validator: validateNoteInput,
-              decoration: const InputDecoration(
-                labelText: 'Note du deuxième devoir',
-                hintText: 'Entrer un entier entre 0 et 20',
-                prefixIcon: Icon(Icons.first_page),
-                border: OutlineInputBorder(),
-              ),
-            ),
+            _buildTextField(_premierDevoirController, 'Note du premier devoir'),
             _gap(),
-            TextFormField(
-              controller: _troisiemeDevoirController,
-              keyboardType: TextInputType.number,
-              validator: validateNoteInput,
-              decoration: const InputDecoration(
-                labelText: 'Note du troisième devoir',
-                hintText: 'Entrer un entier entre 0 et 20',
-                prefixIcon: Icon(Icons.first_page),
-                border: OutlineInputBorder(),
-              ),
-            ),
+            _buildTextField(
+                _deuxiemeDevoirController, 'Note du deuxième devoir'),
             _gap(),
-            TextFormField(
-              controller: _composController,
-              keyboardType: TextInputType.number,
-              validator: validateNoteInput,
-              decoration: const InputDecoration(
-                labelText: 'Note de composition',
-                hintText: 'Entrer un entier entre 0 et 20',
-                prefixIcon: Icon(Icons.first_page),
-                border: OutlineInputBorder(),
-              ),
+            _buildTextField(
+                _troisiemeDevoirController, 'Note du troisième devoir'),
+            _gap(),
+            _buildTextField(_composController, 'Note de composition'),
+            _gap(),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  // Enregistrer la note
+                  NoteModel note = NoteModel(
+                    niveau: widget.eleve.niveau,
+                    serie: widget.eleve.serie,
+                    codeclas: widget.eleve.codeclas,
+                    matric: widget.eleve.matric,
+                    periode: classe?.periode,
+                    matiere: widget.matiere.nomatiere,
+                    devoir01: _premierDevoirController.text,
+                    devoir02: _deuxiemeDevoirController.text,
+                    devoir03: _troisiemeDevoirController.text,
+                    compos: _composController.text,
+                    /*devoir01: double.parse(_premierDevoirController.text),
+                    devoir02: double.parse(_deuxiemeDevoirController.text),
+                    devoir03: double.parse(_troisiemeDevoirController.text),
+                    compos: double.parse(_composController.text),*/
+                  );
+                  storeNoteEleve(note);
+                } else {
+                  _showError('Veuillez corriger les erreurs.');
+                }
+              },
+              child: const Text('Enregistrer'),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String labelText) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      validator: validateNoteInput,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: const OutlineInputBorder(),
       ),
     );
   }

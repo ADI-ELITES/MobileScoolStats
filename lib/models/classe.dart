@@ -3,6 +3,7 @@ class ClasseModel {
   String? niveau;
   String? serie;
   String? codeclas;
+  String? periode;
   String? proftitul;
 
   ClasseModel({
@@ -10,6 +11,7 @@ class ClasseModel {
     this.niveau,
     this.serie,
     this.codeclas,
+    this.periode,
     this.proftitul,
   });
 
@@ -19,6 +21,7 @@ class ClasseModel {
       niveau: json["niveau"],
       serie: json["serie"],
       codeclas: json["codeclas"],
+      periode: json["periode"],
       proftitul: json["proftitul"],
     );
   }
@@ -29,12 +32,13 @@ class ClasseModel {
       'niveau': niveau,
       'serie': serie,
       'codeclas': codeclas,
+      'periode': periode,
       'proftitul': proftitul,
     };
   }
 
   @override
   String toString() {
-    return 'ClasseModel{niveau: $niveau, serie: $serie, codeclas: $codeclas, proftitul: $proftitul}';
+    return 'ClasseModel{niveau: $niveau, serie: $serie, codeclas: $codeclas, periode: $periode, proftitul: $proftitul}';
   }
 }

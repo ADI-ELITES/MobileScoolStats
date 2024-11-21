@@ -58,6 +58,7 @@ class EleveModel {
       'niveau': niveau,
       'serie': serie,
       'codeclas': codeclas,
+      'matric': matric,
       'nom': nom,
       'prenom': prenom,
       'sexe': sexe,
@@ -73,6 +74,6 @@ class EleveModel {
 
   @override
   String toString() {
-    return 'EleveModel{matric: $matric, nom: $nom, prenom: $prenom, sexe: $sexe}';
+    return 'EleveModel{matric: $matric, nom: $nom, prenom: $prenom, sexe: $sexe, matric: $matric, codeclasse: $codeclas}';
   }
 }

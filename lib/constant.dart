@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // ------ STRINGS ------
-const String baseURL = "http://192.168.6.31:8000";
+const String baseURL = "http://192.168.6.47:8000";
 const String elevesURL = '$baseURL/api/eleves/';
 const String loginURL = '$baseURL/api/login';
 const String logoutURL = '$baseURL/api/logout';
@@ -12,8 +12,9 @@ const String userURL = '$baseURL/api/user';
 const String classeURL = '$baseURL/api/classes';
 const String matieresURL = '$baseURL/api/matieres';
 const String matieresClassesURL = '$classeURL/matieres';
-const String notesURL = '$baseURL/api/notes/';
-const String notesEleveURL = '$baseURL/api/notes/eleve/';
+const String notesURL = '$baseURL/api/notes';
+const String noteEleveURL = '$baseURL/api/notes/eleve/';
+const String storeNoteURL = '$notesURL/store';
 const String enseignantURL = '$baseURL/api/enseignants/';
 const String validateTokenURL = '$baseURL/api/token/validate';
 
