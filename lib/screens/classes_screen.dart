@@ -91,8 +91,7 @@ class _ClasseScreenState extends State<ClasseScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              "${classes[index].niveau} ${classes[index].codeclas}" ??
-                                  "",
+                              "${classes[index].niveau} ${classes[index].codeclas}",
                               style: TextStyle(
                                 fontSize: MediaQuery.of(context).size.width *
                                     0.05, // Ajuste la taille du texte

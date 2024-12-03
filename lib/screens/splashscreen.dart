@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_school_state/constant.dart';
 import 'package:mobile_school_state/screens/classes_screen.dart';
-import 'package:mobile_school_state/screens/dashboard.dart';
+//import 'package:mobile_school_state/screens/dashboard.dart';
 import 'package:mobile_school_state/screens/login.dart';
 
 class SplashScreen extends StatefulWidget {

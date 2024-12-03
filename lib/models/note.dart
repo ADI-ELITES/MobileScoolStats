@@ -5,10 +5,10 @@ class NoteModel {
   String? matric;
   String? periode;
   String? matiere;
-  String? devoir01;
-  String? devoir02;
-  String? devoir03;
-  String? compos;
+  double? devoir01;
+  double? devoir02;
+  double? devoir03;
+  double? compos;
 
   NoteModel({
     this.niveau,
@@ -31,10 +31,10 @@ class NoteModel {
       matric: json['matric'],
       periode: json['periode'],
       matiere: json['matiere'],
-      devoir01: json['devoir01'],
-      devoir02: json['devoir02'],
-      devoir03: json['devoir03'],
-      compos: json['compos'],
+      devoir01: double.tryParse(json['devoir01']?.toString() ?? ''),
+      devoir02: double.tryParse(json['devoir02']?.toString() ?? ''),
+      devoir03: double.tryParse(json['devoir03']?.toString() ?? ''),
+      compos: double.tryParse(json['compos']?.toString() ?? ''),
     );
   }
 

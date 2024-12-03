@@ -272,6 +272,8 @@ Future<ApiResponse> saveEleveNote(NoteModel note) async {
       return apiResponse;
     }
 
+    print(note);
+
     // Envoyer une requête POST vers l'URL d'enregistrement de la note
     final response = await http.post(
       Uri.parse(
@@ -298,7 +300,7 @@ Future<ApiResponse> saveEleveNote(NoteModel note) async {
       },
     );
 
-    print("Response : ${response.body} ${response.statusCode}");
+    print("Response : ${response.body}");
 
     switch (response.statusCode) {
       case 201:

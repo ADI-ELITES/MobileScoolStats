@@ -233,77 +233,194 @@ class __FormContentState extends State<_FormContent> {
     return null;
   }
 
+  Widget _buildDropdownField(
+      TextEditingController controller, String labelText) {
+    // Générer les valeurs de 0.01 à 20 avec un écart de 0.25
+    final List<double> notes = [0.01];
+    for (double i = 0.25; i <= 20; i += 0.25) {
+      notes.add(i);
+    }
+
+    // Initialiser la valeur par défaut si elle est vide
+    double initialValue = double.tryParse(controller.text) ?? 0.01;
+
+    return DropdownButtonFormField<double>(
+      value: initialValue,
+      onChanged: (value) {
+        if (value != null) {
+          controller.text = value.toString();
+        }
+      },
+      validator: (value) {
+        if (value == null || value < 0 || value > 20) {
+          return 'Svp, sélectionner une valeur entre 0 et 20';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: const OutlineInputBorder(),
+      ),
+      items: notes.map((note) {
+        return DropdownMenuItem<double>(
+          value: note,
+          child: Text(note.toStringAsFixed(2)),
+        );
+      }).toList(),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 300),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Classe de ${classe?.niveau} ${classe?.codeclas}",
-                style: const TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.bold),
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        constraints: const BoxConstraints(maxWidth: 300),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Classe de ${classe?.niveau} ${classe?.codeclas}",
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Matière : ${widget.matiere.nomatiere}',
-                style: const TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.bold),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Matière : ${widget.matiere.nomatiere}',
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Période : ${classe?.periode}",
-                style: const TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.bold),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Période : ${classe?.periode}",
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            _gap(),
-            _buildTextField(_premierDevoirController, 'Note du premier devoir'),
-            _gap(),
-            _buildTextField(
-                _deuxiemeDevoirController, 'Note du deuxième devoir'),
-            _gap(),
-            _buildTextField(
-                _troisiemeDevoirController, 'Note du troisième devoir'),
-            _gap(),
-            _buildTextField(_composController, 'Note de composition'),
-            _gap(),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  // Enregistrer la note
-                  NoteModel note = NoteModel(
-                    niveau: widget.eleve.niveau,
-                    serie: widget.eleve.serie,
-                    codeclas: widget.eleve.codeclas,
-                    matric: widget.eleve.matric,
-                    periode: classe?.periode,
-                    matiere: widget.matiere.nomatiere,
-                    devoir01: _premierDevoirController.text,
-                    devoir02: _deuxiemeDevoirController.text,
-                    devoir03: _troisiemeDevoirController.text,
-                    compos: _composController.text,
-                    /*devoir01: double.parse(_premierDevoirController.text),
-                    devoir02: double.parse(_deuxiemeDevoirController.text),
-                    devoir03: double.parse(_troisiemeDevoirController.text),
-                    compos: double.parse(_composController.text),*/
-                  );
-                  storeNoteEleve(note);
-                } else {
-                  _showError('Veuillez corriger les erreurs.');
-                }
-              },
-              child: const Text('Enregistrer'),
-            ),
-          ],
+              _gap(),
+              _buildDropdownField(
+                  _premierDevoirController, 'Note du premier devoir'),
+              _gap(),
+              _buildDropdownField(
+                  _deuxiemeDevoirController, 'Note du deuxième devoir'),
+              _gap(),
+              _buildDropdownField(
+                  _troisiemeDevoirController, 'Note du troisième devoir'),
+              _gap(),
+              _buildDropdownField(_composController, 'Note de composition'),
+              _gap(),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    // Enregistrer la note
+                    NoteModel note = NoteModel(
+                      niveau: widget.eleve.niveau,
+                      serie: widget.eleve.serie,
+                      codeclas: widget.eleve.codeclas,
+                      matric: widget.eleve.matric,
+                      periode: classe?.periode,
+                      matiere: widget.matiere.nomatiere,
+                      devoir01: double.tryParse(_premierDevoirController.text),
+                      devoir02: double.tryParse(_deuxiemeDevoirController.text),
+                      devoir03:
+                          double.tryParse(_troisiemeDevoirController.text),
+                      compos: double.tryParse(_composController.text),
+                    );
+                    storeNoteEleve(note);
+                  } else {
+                    _showError('Veuillez corriger les erreurs.');
+                  }
+                },
+                child: const Text('Enregistrer'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  /*@override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        constraints: const BoxConstraints(maxWidth: 300),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Classe de ${classe?.niveau} ${classe?.codeclas}",
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Matière : ${widget.matiere.nomatiere}',
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Période : ${classe?.periode}",
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+              ),
+              _gap(),
+              _buildTextField(
+                  _premierDevoirController, 'Note du premier devoir'),
+              _gap(),
+              _buildTextField(
+                  _deuxiemeDevoirController, 'Note du deuxième devoir'),
+              _gap(),
+              _buildTextField(
+                  _troisiemeDevoirController, 'Note du troisième devoir'),
+              _gap(),
+              _buildTextField(_composController, 'Note de composition'),
+              _gap(),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    // Enregistrer la note
+                    NoteModel note = NoteModel(
+                      niveau: widget.eleve.niveau,
+                      serie: widget.eleve.serie,
+                      codeclas: widget.eleve.codeclas,
+                      matric: widget.eleve.matric,
+                      periode: classe?.periode,
+                      matiere: widget.matiere.nomatiere,
+                      devoir01: double.tryParse(_premierDevoirController.text),
+                      devoir02: double.tryParse(_deuxiemeDevoirController.text),
+                      devoir03:
+                          double.tryParse(_troisiemeDevoirController.text),
+                      compos: double.tryParse(_composController.text),
+                    );
+                    storeNoteEleve(note);
+                  } else {
+                    _showError('Veuillez corriger les erreurs.');
+                  }
+                },
+                child: const Text('Enregistrer'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -319,7 +436,7 @@ class __FormContentState extends State<_FormContent> {
         border: const OutlineInputBorder(),
       ),
     );
-  }
+  }*/
 
   Widget _gap() => const SizedBox(height: 16);
 }

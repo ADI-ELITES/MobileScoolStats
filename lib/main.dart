@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_school_state/screens/splashscreen.dart';
-import 'routes.dart';
 
 void main() {
   runApp(const MainApp(isDark: false)); // Ajout du paramètre isDark
