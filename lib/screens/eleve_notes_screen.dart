@@ -236,13 +236,14 @@ class __FormContentState extends State<_FormContent> {
   Widget _buildDropdownField(
       TextEditingController controller, String labelText) {
     // Générer les valeurs de 0.01 à 20 avec un écart de 0.25
-    final List<double> notes = [0.01];
+    final List<double> notes = [0.01, 0.00];
     for (double i = 0.25; i <= 20; i += 0.25) {
       notes.add(i);
     }
 
     // Initialiser la valeur par défaut si elle est vide
     double initialValue = double.tryParse(controller.text) ?? 0.01;
+    controller.text = initialValue.toString();
 
     return DropdownButtonFormField<double>(
       value: initialValue,
@@ -269,7 +270,6 @@ class __FormContentState extends State<_FormContent> {
       }).toList(),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -303,6 +303,17 @@ class __FormContentState extends State<_FormContent> {
                   "Période : ${classe?.periode}",
                   style: const TextStyle(
                       fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "NB : 0.01 veut dire que c'est une note pas définis",
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.red),
                 ),
               ),
               _gap(),
@@ -347,7 +358,6 @@ class __FormContentState extends State<_FormContent> {
       ),
     );
   }
-
 
   /*@override
   Widget build(BuildContext context) {

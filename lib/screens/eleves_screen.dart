@@ -84,9 +84,9 @@ class _EleveScreenState extends State<EleveScreen> {
                   return ListTile(
                     leading: CircleAvatar(
                       child: Text(
-                          '${eleves[index].nom!.substring(0, 1).toUpperCase()}'),
+                          eleves[index].nom!.substring(0, 1).toUpperCase()),
                     ),
-                    title: Text('${eleves[index].nom!.toUpperCase()}'),
+                    title: Text(eleves[index].nom!.toUpperCase()),
                     subtitle: Text(
                         '${eleves[index].prenom!.toUpperCase()} (${eleves[index].matric})'),
                     trailing: TextButton.icon(
