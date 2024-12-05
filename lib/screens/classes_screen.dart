@@ -64,11 +64,11 @@ class _ClasseScreenState extends State<ClasseScreen> {
           : RefreshIndicator(
               onRefresh: fetchClasses,
               child: Container(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(20.0),
                 child: GridView.count(
                   crossAxisCount: 3,
-                  mainAxisSpacing: 50.0,
-                  crossAxisSpacing: 50.0,
+                  mainAxisSpacing: 57.0,
+                  crossAxisSpacing: 57.0,
                   children: List.generate(
                     classes.length,
                     (index) {
@@ -84,7 +84,7 @@ class _ClasseScreenState extends State<ClasseScreen> {
                           );
                         },
                         child: Container(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(2.0),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(8.0),
@@ -94,7 +94,7 @@ class _ClasseScreenState extends State<ClasseScreen> {
                               "${classes[index].niveau} ${classes[index].codeclas}",
                               style: TextStyle(
                                 fontSize: MediaQuery.of(context).size.width *
-                                    0.05, // Ajuste la taille du texte
+                                    0.03, // Ajuste la taille du texte
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),

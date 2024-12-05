@@ -89,25 +89,38 @@ class _EleveScreenState extends State<EleveScreen> {
                     title: Text(eleves[index].nom!.toUpperCase()),
                     subtitle: Text(
                         '${eleves[index].prenom!.toUpperCase()} (${eleves[index].matric})'),
-                    trailing: TextButton.icon(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context)
-                            .colorScheme
-                            .primary, //Colors.blue[200],
-                        foregroundColor:
-                            Theme.of(context).colorScheme.onPrimary,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EleveNoteScreen(
-                                eleve: eleves[index], matiere: widget.matiere),
+                    trailing: Row(
+                      mainAxisSize:
+                          MainAxisSize.min, // Important pour éviter l'overflow
+                      children: [
+                        // IconButton(
+                        //   icon: const Icon(Icons.check_circle_outline_outlined),
+                        //   onPressed: () {
+                        //      // Action pour l'icône d'édition
+                        //   },
+                        // ),
+                        TextButton.icon(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .primary, //Colors.blue[200],
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
                           ),
-                        );
-                      },
-                      label: const Text('Notes'),
-                      icon: const Icon(Icons.app_registration_rounded),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EleveNoteScreen(
+                                    eleve: eleves[index],
+                                    matiere: widget.matiere),
+                              ),
+                            );
+                          },
+                          label: const Text('Notes'),
+                          icon: const Icon(Icons.app_registration_rounded),
+                        ),
+                      ],
                     ),
                   );
                 },

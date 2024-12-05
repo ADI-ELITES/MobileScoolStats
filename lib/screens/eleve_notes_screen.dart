@@ -265,7 +265,7 @@ class __FormContentState extends State<_FormContent> {
       items: notes.map((note) {
         return DropdownMenuItem<double>(
           value: note,
-          child: Text(note.toStringAsFixed(2)),
+          child: Text(note == 0.01 ? '' : note.toStringAsFixed(2)),
         );
       }).toList(),
     );
@@ -305,17 +305,17 @@ class __FormContentState extends State<_FormContent> {
                       fontSize: 20.0, fontWeight: FontWeight.bold),
                 ),
               ),
-              const Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "NB : 0.01 veut dire que c'est une note pas définis",
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.red),
-                ),
-              ),
+              // const Align(
+              //   alignment: Alignment.topLeft,
+              //   child: Text(
+              //     "NB : 0.01 veut dire que c'est une note pas définis",
+              //     style: TextStyle(
+              //         fontSize: 15.0,
+              //         fontWeight: FontWeight.bold,
+              //         fontStyle: FontStyle.italic,
+              //         color: Colors.red),
+              //   ),
+              // ),
               _gap(),
               _buildDropdownField(
                   _premierDevoirController, 'Note du premier devoir'),
