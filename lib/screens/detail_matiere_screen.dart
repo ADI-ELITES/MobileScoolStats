@@ -17,6 +17,7 @@ class DetailMatiereScreen extends StatefulWidget {
 class _DetailMatiereScreenState extends State<DetailMatiereScreen> {
   List<MatiereModel> matieres = [];
   bool isLoading = true;
+  bool _isActive = true;
 
   @override
   void initState() {
@@ -24,33 +25,42 @@ class _DetailMatiereScreenState extends State<DetailMatiereScreen> {
     fetchMatiereWithClasse();
   }
 
+  @override
+  void dispose() {
+    _isActive = false;
+    super.dispose();
+  }
+
   Future fetchMatiereWithClasse() async {
     ApiResponse response = await getMatieresFromClasse(widget.classe);
-    if (response.error == null) {
-      setState(() {
-        matieres = (response.data as List<MatiereModel>)
-            .where((matiere) =>
-                matiere.niveau == widget.classe.niveau &&
-                matiere.serie == widget.classe.serie &&
-                matiere.codeclas == widget.classe.codeclas)
-            .toList();
-        isLoading = false; // Stopper l'indicateur de chargement
-      });
-    } else if (response.error == unauthorized) {
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text(unauthorized)));
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.error ?? "tout est vide")),
-      );
+    if (_isActive && mounted) {
+      if (response.error == null) {
+        setState(() {
+          matieres = (response.data as List<MatiereModel>)
+              .where((matiere) =>
+                  matiere.niveau == widget.classe.niveau &&
+                  matiere.serie == widget.classe.serie &&
+                  matiere.codeclas == widget.classe.codeclas)
+              .toList();
+          isLoading = false; // Stopper l'indicateur de chargement
+        });
+      } else if (response.error == unauthorized) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text(unauthorized)));
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.error ?? "tout est vide")),
+        );
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
