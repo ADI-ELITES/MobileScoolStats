@@ -49,10 +49,13 @@ class _Logo extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         //FlutterLogo(size: isSmallScreen ? 100 : 200),
-        Image.asset(
-          'assets/LOGO-SCOLARIS.png',
-          width: isSmallScreen ? 100 : 200,
-          height: isSmallScreen ? 100 : 200,
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20.0),
+          child: Image.asset(
+            'assets/LOGO-SCOLARIS.png',
+            width: isSmallScreen ? 100 : 200,
+            height: isSmallScreen ? 100 : 200,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),

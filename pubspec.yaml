@@ -1,5 +1,5 @@
 name: mobile_school_state
-description: App mobile pour lire les données dépuis le projet laravel."
+description: App mobile pour lire les données dépuis le projet laravel.
 publish_to: 'none'
 version: 0.1.0
 
@@ -10,6 +10,7 @@ dependencies:
   dio: ^5.7.0
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.2
   http: ^1.2.2
   path_provider: ^2.1.4
   share_plus: ^10.1.3
@@ -25,3 +26,8 @@ flutter:
 
   assets:
     - assets/
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: 'assets/LOGO-SCOLARIS.png'

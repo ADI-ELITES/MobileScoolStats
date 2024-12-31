@@ -18,8 +18,8 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme:
             ColorScheme.fromSwatch(primarySwatch: Colors.green).copyWith(
-          primary: Colors.green.shade900,
-          secondary: Colors.greenAccent,
+          primary: Colors.green.shade700,
+          secondary: Colors.green.shade500,
         ),
         useMaterial3: true,
         brightness: isDark ? Brightness.dark : Brightness.light,

@@ -64,11 +64,17 @@ class _ClasseScreenState extends State<ClasseScreen> {
           : RefreshIndicator(
               onRefresh: fetchClasses,
               child: Container(
-                padding: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                padding: const EdgeInsets.only(
+                  left: 15.0,
+                  right: 15.0,
+                ),
                 child: GridView.count(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 57.0,
-                  crossAxisSpacing: 57.0,
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10.0,
+                  crossAxisSpacing: 20.0,
                   children: List.generate(
                     classes.length,
                     (index) {
@@ -83,25 +89,60 @@ class _ClasseScreenState extends State<ClasseScreen> {
                             ),
                           );
                         },
-                        child: Container(
-                          padding: const EdgeInsets.all(2.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "${classes[index].niveau} ${classes[index].codeclas}",
-                              style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width *
-                                    0.03, // Ajuste la taille du texte
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontWeight: FontWeight.bold,
+                        child: Card(
+                          elevation: 2.0,
+                          color: Theme.of(context).colorScheme.secondary,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Image avec bordure arrondie
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(15.0),
+                                  topRight: Radius.circular(15.0),
+                                ),
+                                child: Image.asset(
+                                  'assets/salle_classe_1.jpg',
+                                  width: double.infinity,
+                                ),
                               ),
-                              textAlign: TextAlign.center,
-                            ),
+                              const SizedBox(
+                                height: 14.0,
+                              ),
+                              Text(
+                                "${classes[index].niveau} ${classes[index].codeclas}",
+                                style: TextStyle(
+                                  fontSize: MediaQuery.of(context).size.width *
+                                      0.05, // Ajuste la taille du texte
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
                         ),
+                        // child: Container(
+                        //   padding: const EdgeInsets.all(2.0),
+                        //   decoration: BoxDecoration(
+                        //     color: Theme.of(context).colorScheme.primary,
+                        //     borderRadius: BorderRadius.circular(8.0),
+                        //   ),
+                        //   child: Center(
+                        //     child: Text(
+                        //       "${classes[index].niveau} ${classes[index].codeclas}",
+                        //       style: TextStyle(
+                        //         fontSize: MediaQuery.of(context).size.width *
+                        //             0.03, // Ajuste la taille du texte
+                        //         color: Theme.of(context).colorScheme.onPrimary,
+                        //         fontWeight: FontWeight.bold,
+                        //       ),
+                        //       textAlign: TextAlign.center,
+                        //     ),
+                        //   ),
+                        // ),
                       );
                     },
                   ),
